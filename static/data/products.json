@@ -1,0 +1,50 @@
+{
+    "datasets": [
+      {
+        "label": "Product 1",
+        "backgroundColor": "#9966FF",
+        "hoverBackgroundColor": "#000000",
+        "hoverBorderColor": "#9966FF",
+        "hoverBorderWidth": 5,
+        "hoverRadius": 5,
+        "data": [{
+          "x": 20,
+          "y": 25,
+          "r": 5
+        },
+        {
+          "x": 40,
+          "y": 10,
+          "r": 10
+        },
+        {
+          "x": 30,
+          "y": 22,
+          "r": 30
+        }]
+      },
+      {
+        "label": "Product 2",
+        "backgroundColor": "rgba(255,99,132,0.2)",
+        "hoverBackgroundColor": "rgba(255,99,100,0.5)",
+        "hoverBorderColor": "rgba(255,99,132,0.5)",
+        "hoverBorderWidth": 5,
+        "hoverRadius": 5,
+        "data": [{
+          "x": 10,
+          "y": 30,
+          "r": 15
+        },
+        {
+          "x": 20,
+          "y": 20,
+          "r": 10
+        },
+        {
+          "x": 15,
+          "y": 8,
+          "r": 30
+        }]
+      }
+    ]
+  }

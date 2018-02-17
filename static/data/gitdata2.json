@@ -1,0 +1,51 @@
+{
+    "datasets": [
+          {
+            "label": "GitHub Commits",
+            "backgroundColor": [
+              "#f87979",
+              "#41B883",
+              "#E46651",
+              "#00D8FF",
+              "#DD1B16",
+              "#DC1A16",
+              "#E40051",
+              "#a87070",
+              "#c0c070",
+              "#e0e070",
+              "#087070",
+              "#987070"
+            ],
+            "borderColor": "rgba(179,181,198,1)",
+            "pointBackgroundColor": "rgba(179,181,198,1)",
+            "pointBorderColor": "#fff",
+            "pointHoverBackgroundColor": "#fff",
+            "pointHoverBorderColor": "rgba(179,181,198,1)",
+            "data": [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+          },
+          {
+            "label": "GitHub Checkout",
+            "backgroundColor": [
+              "#f87979",
+              "#41B883",
+              "#E46651",
+              "#00D8FF",
+              "#DD1B16",
+              "#DC1A16",
+              "#E40051",
+              "#a87070",
+              "#c0c070",
+              "#e0e070",
+              "#087070",
+              "#987070"
+            ],
+            "borderColor": "rgba(179,181,198,1)",
+            "pointBackgroundColor": "rgba(179,181,198,1)",
+            "pointBorderColor": "#fff",
+            "pointHoverBackgroundColor": "#fff",
+            "pointHoverBorderColor": "rgba(179,181,198,1)",
+            "data": [39, 10, 40, 40, 20, 12, 39, 20, 12, 11, 80, 40]
+          }
+    ],
+    "labels":["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  }
