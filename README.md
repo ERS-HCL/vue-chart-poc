@@ -1,8 +1,8 @@
 # charts
 
-This application created to understand and develop chart component getting dynamic data from rest API.
-Within this application cover how to create promised based Rest Client and use inside different type of chart components which required dynamic data at runtime.
-This application covers all type of chart component which are as below.
+This application is created to understand and develop chart components using dynamic data from rest API.
+This application covers how to create promise based Rest Client and use it inside different types of chart components which require dynamic data at runtime.
+This application also covers all types of chart components which are as below.
 
 * Bar Chart
 * Line Chart
