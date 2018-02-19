@@ -55,6 +55,15 @@ export default {
     const div = [
       h('div',{
         class: ['dropdown-menu', 'dropdown-primary'],
+        on: {
+          click(e) {
+            e.stopImmediatePropagation();
+            const toggleMenu = e.path[0].parentNode;
+            if (toggleMenu) {
+              toggleMenu.classList.toggle('show');
+            }
+          }
+        },
         attr: {
           'aria-labelledby': 'navbarDropdownMenuLink'
         },

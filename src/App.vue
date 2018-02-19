@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" v-on:click="closeMenu">
     <div class="container">
     <!--Navbar-->
     <navbar position="top" className="indigo" name="Your Logo" href="#">
@@ -54,7 +54,13 @@ export default {
         console.log('test' + value);
       })
     };
+  },methods: {
+    closeMenu(){ 
+     var el =  document.getElementsByClassName("dropdown-menu");
+     el[0].classList.remove('show');
+    }
   }
+
 };
 </script>
 
