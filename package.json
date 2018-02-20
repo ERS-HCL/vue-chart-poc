@@ -116,11 +116,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mlprajapati/VueChartPOC.git"
+    "url": "git+https://github.com/mlprajapati/vue-chart-poc.git"
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/mlprajapati/VueChartPOC.git/issues"
+    "url": "https://github.com/mlprajapati/vue-chart-poc.git/issues"
   },
-  "homepage": "https://github.com/mlprajapati/VueChartPOC.git#readme"
+  "homepage": "https://github.com/mlprajapati/vue-chart-poc.git#readme"
 }
