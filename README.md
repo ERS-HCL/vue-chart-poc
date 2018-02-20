@@ -69,9 +69,9 @@ Change base url from http-common.js file.
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 ```
 ## Demo
-```
-    [![Application Live Demo](https://nostalgic-northcutt-0522ad.netlify.com)]
-```
+
+    [Application Live Demo](https://nostalgic-northcutt-0522ad.netlify.com)
+
 
 ### License
 MIT
