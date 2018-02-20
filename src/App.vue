@@ -1,6 +1,6 @@
 <template>
   <div id="app" v-on:click="closeMenu">
-    <div class="container">
+    <div class="container" >
     <!--Navbar-->
     <navbar position="top" className="indigo" name="Your Logo" href="#">
       <navbar-collapse>
@@ -72,6 +72,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  height:90vh;
 }
 .navbar .dropdown-menu a:hover {
   color: inherit !important;
