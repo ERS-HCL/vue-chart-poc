@@ -70,7 +70,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ```
 ### Demo
 
-    [https://nostalgic-northcutt-0522ad.netlify.com](https://nostalgic-northcutt-0522ad.netlify.com)
+   * Application live demo [https://nostalgic-northcutt-0522ad.netlify.com](https://nostalgic-northcutt-0522ad.netlify.com).
 
 
 ### License
