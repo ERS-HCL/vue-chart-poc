@@ -78,8 +78,11 @@ export default {
         on: {
           click(e) {
             e.stopImmediatePropagation();
-            const collapseMenu = e.path[2].querySelector('.collapse');
-            collapseMenu.classList.toggle('show');
+            const collapseMenu = (e.path && e.path.length && e.path.length>1)?e.path[2].querySelector('.collapse'):e.target.nextSibling;
+            if(collapseMenu){
+              collapseMenu.classList.toggle('show');
+            }
+            
           }
         }
       }, [
