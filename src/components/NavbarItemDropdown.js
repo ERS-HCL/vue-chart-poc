@@ -34,7 +34,7 @@ export default {
       on: {
         click(e) {
           e.stopImmediatePropagation();
-          const toggleMenu = e.path[0].nextElementSibling;
+          const toggleMenu = (e.path && e.path.length && e.path.length>0)?e.path[0].nextElementSibling:e.target.nextSibling;
           if (toggleMenu) {
             toggleMenu.classList.toggle('show');
           }
@@ -58,7 +58,7 @@ export default {
         on: {
           click(e) {
             e.stopImmediatePropagation();
-            const toggleMenu = e.path[0].parentNode;
+            const toggleMenu = (e.path && e.path.length && e.path.length>0)?e.path[0].parentNode:e.target.parentNode;
             if (toggleMenu) {
               toggleMenu.classList.toggle('show');
             }

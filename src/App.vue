@@ -57,7 +57,13 @@ export default {
   },methods: {
     closeMenu(){ 
      var el =  document.getElementsByClassName("dropdown-menu");
-     el[0].classList.remove('show');
+     if(el && el.length && el.length>0)
+     {
+       el[0].classList.remove('show');
+     } else {
+       el.classList.remove('show');
+     }
+     
     }
   }
 
