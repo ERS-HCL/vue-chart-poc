@@ -1,4 +1,4 @@
-# charts
+# Charts
 
 This application is created to understand and develop chart components using dynamic data from rest API.
 This application covers how to create promise based Rest Client and use it inside different types of chart components which require dynamic data at runtime.
@@ -67,6 +67,7 @@ Change base url from http-common.js file.
 ```
 ```
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+```
 ## Demo
 ```
     [![Application Live Demo](https://nostalgic-northcutt-0522ad.netlify.com)]
