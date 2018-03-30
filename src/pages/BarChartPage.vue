@@ -12,6 +12,23 @@
           </div>
       </div>
     </div>
+     <div class="col-sm-6 col-md-6">
+    
+      <table class="table table-bordered">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Created At</th>
+        </tr>
+        <tr >
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+     
+    
+     </div>
     <div class="row" v-if="errors">{{errors}}</div>
   </div>
 </template>
@@ -20,15 +37,24 @@
 
 import BarChart from '@/components/BarChart';
 import chartService from '@/services/ChartService';
+import VuePagination from '@/components/Pagination.vue';
 
 export default {
   name: 'BarChartPage',
-  components: { BarChart },
+  components: { BarChart,VuePagination },
   data() {
     return {
       title: "Bar Chart",
       datacollection: undefined,
-      errors: undefined
+      errors: undefined,
+      gitdata: {
+            total: 0,
+            per_page: 2,
+            from: 1,
+            to: 0,
+            current_page: 1
+        },
+      offset: 4,
     };
   },
   props: {
