@@ -11,18 +11,18 @@
                 </div>
             </div>
 
-            <div class="col-sm-6 col-md-6" style="float:left;" v-if="datacollection">
+            <div class="col-sm-6 col-md-6" style="float:left;" v-if="currentPageData">
                 <div class="card">
                     <div class="card-block">
                         <table width="100%">
                          <caption>{{title}}</caption>
                             <thead>
-                                <tr>
+                                <tr v-if="datacollection">
                                     <th>Country</th><th v-for="l in datacollection.labels">{{l}}</th>  
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="d in datacollection.datasets">
+                                <tr v-for="d in currentPageData">
                                     <td>{{d.label}}</td><td v-for="da in d.data">{{da}}</td>
                                    
                                 </tr>
@@ -60,6 +60,7 @@
             return {
                 title: "Table View of Populatrion",
                 datacollection: undefined,
+                currentPageData:[],
                 errors: undefined,
                 pageOne: {
                   currentPage: 1,
@@ -77,12 +78,10 @@
             getData() {
                 var self = this;
                 self.chartService.getCountryPopulationData().then(data => {
-                        console.log(data);
-                        self.datacollection = data;
-                        console.log(">>>>>>>>>>>>>>>>> ",self.datacollection.datasets.length);
-
-                        self.pageOne.totalPages = parseInt(self.datacollection.datasets.length) / parseInt(self.pageOne.itemsPerPage);
-                        console.log(">>>>>>>>>>>>>>>>> ",self.pageOne.totalPages);
+                     
+                      self.datacollection = data; 
+                      self.pageOne.totalPages = parseInt(self.datacollection.datasets.length) / parseInt(self.pageOne.itemsPerPage);
+                      self.currentPageData = self.paginate(self.datacollection.datasets,self.pageOne.itemsPerPage,self.pageOne.currentPage);
                     },
                     function(error) {
                         self.errors = error;
@@ -91,6 +90,11 @@
             pageOneChanged (pageNum) {
                 this.pageOne.currentPage = pageNum;
                 console.log(this.pageOne.currentPage);
+                this.currentPageData = this.paginate(this.datacollection.datasets,this.pageOne.itemsPerPage,this.pageOne.currentPage)
+            },
+            paginate (array, page_size, page_number) {
+              console.log("<<<>>> ",array, page_size, page_number);
+              return array.slice(page_number * page_size, (page_number + 1) * page_size);
             }
         },
         mounted: function() {
