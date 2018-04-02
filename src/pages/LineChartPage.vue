@@ -6,7 +6,7 @@
             <div class="card-block">
               <h4 class="card-title">{{title}}</h4>
               <p class="card-text" v-if="datacollection">
-                <line-chart :data="datacollection" :options="{title: {display: true,text: 'World population per region (in millions)'},responsive: true, maintainAspectRatio: false}"></line-chart>
+                <line-chart :data="datacollection" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
               </p>
             </div>
           </div>
@@ -37,7 +37,7 @@ export default {
   methods: {
     getData() {
       var self = this;
-      self.chartService.getCountryPopulationData().then(data => {
+      self.chartService.getChartData().then(data => {
          console.log(data);
          self.datacollection = data;
       },

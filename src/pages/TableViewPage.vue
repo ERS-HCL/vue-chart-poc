@@ -14,7 +14,15 @@
                         <table width="100%">
                             <thead>
                                 <tr v-if="datacollection">
-                                    <th ><a href="javascript:void(0);" @click="sortByKey(labels[0])">{{labels[0]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[5])">{{labels[5]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[7])">{{labels[7]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[8])">{{labels[8]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[9])">{{labels[9]}}</a></th>
+                                    <th >
+                                      <a href="javascript:void(0);" @click="sortByKey(labels[0])">{{labels[0]}}</a>
+                                      <span class="glyphicon glyphicon-triangle-bottom"></span>
+                                      <span class="glyphicon glyphicon-triangle-top"></span>
+                                    </th>
+                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[5])">{{labels[5]}}</a></th>
+                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[7])">{{labels[7]}}</a></th>
+                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[8])">{{labels[8]}}</a></th>
+                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[9])">{{labels[9]}}</a></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,6 +61,7 @@
                 currentPageData:[],
                 errors: undefined,
                 order: true,
+                sortkey:'',
                 paginationClass : 'paginationClass',
                 pageOne: {
                   currentPage: 1,
@@ -94,29 +103,27 @@
               console.log("<<<>>> ",array, page_size, page_number);
               return array.slice(page_number * page_size, (page_number + 1) * page_size);
             },
+            dynamicSort(property) {
+                var sortOrder = 1;
+                if(property[0] === "-") {
+                    sortOrder = -1;
+                    property = property.substr(1);
+                }
+                return function (a,b) {
+                    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                    return result * sortOrder;
+                }
+            },
             sortByKey(key) {
-              self = this;
-              return this.currentPageData.sort(function(a, b) {
-                
-                console.log("<<<<<<<<<<<<<<<<< ",self.order, "  :: ",key, "a :: ",a);
-                 if(self.order) {
-                   self.order = false;
-                     if ( a[key] < b[key] )
-                        return -1;
-                      if ( a[key] > b[key] )
-                          return 1;
-                      return 0;
-                 } else {
-                    self.order = true;
-                     if ( b[key] < a[key] )
-                        return -1;
-                      if ( b[key] > a[key] )
-                          return 1;
-                      return 0;
-                 }
-               
-                  
-              });
+              this.sortkey = key;
+              if(this.order){
+                this.order = false;
+                this.currentPageData.sort(this.dynamicSort(key));
+              } else{
+                this.order = true;
+                 this.currentPageData.sort(this.dynamicSort("-"+key));
+              }
+              
             }
         },
         mounted: function() {
