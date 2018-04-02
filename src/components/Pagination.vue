@@ -1,18 +1,29 @@
 <template>
-<ul class="pagination">
-  <li>
-    <a href="#" @click.prevent="pageChanged(1)" aria-label="Previous">
+<ul :class="paginationClass">
+  <li @click.prevent="pageChanged(1)" title="Previous" aria-label="Previous">
+   
       <span aria-hidden="true">&laquo;</span>
-    </a>
+  
   </li>
-  <li v-for="n in paginationRange" :class="activePage(n)">
-    <a href="#" @click.prevent="pageChanged(n)">{{ n }}</a>
+  <li :class="preDisabled()" @click.prevent="pageChanged(currentPage-1)" title="Previous" aria-label="Previous">
+   
+      <span aria-hidden="true">&lt;</span>
+  
   </li>
-  <li>
-    <a href="#" @click.prevent="pageChanged(lastPage)" aria-label="Next">
+  <li v-for="n in paginationRange" :class="activePage(n)" @click.prevent="pageChanged(n)">
+    <span>{{ n }}</span>
+  </li>
+  <li :class="nextDisabled()" @click.prevent="pageChanged(currentPage+1)" title="Next" aria-label="Next">
+    
+      <span aria-hidden="true">&gt;</span>
+   
+  </li>
+  <li @click.prevent="pageChanged(lastPage)" title="Next" aria-label="Next">
+    
       <span aria-hidden="true">&raquo;</span>
-    </a>
+   
   </li>
+  
 </ul>
 </template>
 
@@ -36,7 +47,8 @@ export default {
       type: Number,
       default: 5,
       coerce: (val) => parseInt(val)
-    }
+    },
+    paginationClass:''
   },
   data () {
     return {}
@@ -68,8 +80,27 @@ export default {
       this.$emit('page-changed', pageNum)
     },
     activePage (pageNum) {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>. ",this.currentPage === pageNum);
       return this.currentPage === pageNum ? 'active' : ''
+    },
+    preDisabled (){
+      if(this.currentPage <=1){
+        return 'disabled';
+      }
+      return '';
+    },
+    nextDisabled(){
+      if(this.currentPage >=this.lastPage){
+        return 'disabled';
+      }
+      return '';
     }
   }
 }
 </script>
+<style>
+.disabled {
+    pointer-events:none; 
+    opacity:0.6;         
+}
+</style>

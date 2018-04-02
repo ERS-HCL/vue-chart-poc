@@ -1,87 +1,84 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-sm-6 col-md-6">
+   
+            <div class="col-sm-12 col-md-12" style="float:left;" v-if="currentPageData">
                 <div class="card">
                     <div class="card-block">
-                        <p class="card-text" v-if="datacollection">
-                            <line-chart :data="datacollection" :options="{title: {display: true,text: 'World population per region (in millions)'}}"></line-chart>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-6" style="float:left;" v-if="currentPageData">
-                <div class="card">
-                    <div class="card-block">
+                    <h3>{{title}}</h3>
+                        <pagination :current-page="pageOne.currentPage"
+                        :total-pages="pageOne.totalPages"
+                        :items-per-page="pageOne.itemsPerPage"
+                        @page-changed="pageOneChanged" :paginationClass="paginationClass">
+                        </pagination>
                         <table width="100%">
-                         <caption>{{title}}</caption>
                             <thead>
                                 <tr v-if="datacollection">
-                                    <th>Country</th><th v-for="l in datacollection.labels">{{l}}</th>  
+                                    <th ><a href="javascript:void(0);" @click="sortByKey(labels[0])">{{labels[0]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[5])">{{labels[5]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[7])">{{labels[7]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[8])">{{labels[8]}}</a></th><th><a href="javascript:void(0);" @click="sortByKey(labels[9])">{{labels[9]}}</a></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="d in currentPageData">
-                                    <td>{{d.label}}</td><td v-for="da in d.data">{{da}}</td>
-                                   
+                                    <td>{{d.name}}</td>
+                                    <td>{{d.capital}}</td>
+                                    <td>{{d.region}}</td>
+                                    <td>{{d.subregion}}</td>
+                                    <td>{{d.population}}</td>
+                                    
                                 </tr>
                             </tbody>
-                            <tfoot>
-                              <tr> 
-                                <td :colspan="datacollection.labels.length + 1" style="text-align: right;">
-                                  <pagination :current-page="pageOne.currentPage"
-                                              :total-pages="pageOne.totalPages"
-                                              :items-per-page="pageOne.itemsPerPage"
-                                              @page-changed="pageOneChanged">
-                                  </pagination>
-                                </td>
-                              </tr>
-                            </tfoot>
+                          
                         </table>
+                         
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row" v-if="errors">{{errors}}</div>
     </div>
 </template>
 
 <script>
-    import LineChart from '@/components/LineChart';
-    import chartService from '@/services/ChartService';
+    import populationService from '@/services/PopulationService';
     import Pagination from '@/components/Pagination.vue';
     export default {
         name: 'TableViewPage',
         components: {
-            LineChart,Pagination
+            Pagination
         },
         data() {
             return {
-                title: "Table View of Populatrion",
+                title: "Table View of Population",
                 datacollection: undefined,
+                labels:undefined,
                 currentPageData:[],
                 errors: undefined,
+                order: true,
+                paginationClass : 'paginationClass',
                 pageOne: {
                   currentPage: 1,
-                  totalPages: 5,
-                  itemsPerPage: 2
+                  totalPages: 10,
+                  itemsPerPage: 10
                 }
             };
         },
         props: {
-            chartService: {
-                default: () => chartService
+            populationService: {
+                default: () => populationService
             }
         },
         methods: {
             getData() {
                 var self = this;
-                self.chartService.getCountryPopulationData().then(data => {
-                     
+                self.populationService.getCountryPopulationData().then(data => {
+                     console.log(data);
                       self.datacollection = data; 
-                      self.pageOne.totalPages = parseInt(self.datacollection.datasets.length) / parseInt(self.pageOne.itemsPerPage);
-                      self.currentPageData = self.paginate(self.datacollection.datasets,self.pageOne.itemsPerPage,self.pageOne.currentPage);
+
+                      if(self.datacollection && self.datacollection.length && self.datacollection.length>0) {
+                        self.labels =  Object.keys(self.datacollection[0]);
+                        self.pageOne.totalPages = parseInt(self.datacollection.length) / parseInt(self.pageOne.itemsPerPage);
+                        self.currentPageData = self.paginate(self.datacollection,self.pageOne.itemsPerPage,self.pageOne.currentPage);
+                      }
+                      
                     },
                     function(error) {
                         self.errors = error;
@@ -90,11 +87,36 @@
             pageOneChanged (pageNum) {
                 this.pageOne.currentPage = pageNum;
                 console.log(this.pageOne.currentPage);
-                this.currentPageData = this.paginate(this.datacollection.datasets,this.pageOne.itemsPerPage,this.pageOne.currentPage)
+                this.currentPageData = this.paginate(this.datacollection,this.pageOne.itemsPerPage,this.pageOne.currentPage)
             },
             paginate (array, page_size, page_number) {
+              page_number = page_number - 1;
               console.log("<<<>>> ",array, page_size, page_number);
               return array.slice(page_number * page_size, (page_number + 1) * page_size);
+            },
+            sortByKey(key) {
+              self = this;
+              return this.currentPageData.sort(function(a, b) {
+                
+                console.log("<<<<<<<<<<<<<<<<< ",self.order, "  :: ",key, "a :: ",a);
+                 if(self.order) {
+                   self.order = false;
+                     if ( a[key] < b[key] )
+                        return -1;
+                      if ( a[key] > b[key] )
+                          return 1;
+                      return 0;
+                 } else {
+                    self.order = true;
+                     if ( b[key] < a[key] )
+                        return -1;
+                      if ( b[key] > a[key] )
+                          return 1;
+                      return 0;
+                 }
+               
+                  
+              });
             }
         },
         mounted: function() {
@@ -116,6 +138,12 @@ table thead {
   background-color:gray;
   weight:1px;
   color:#FFF;
+  text-transform: capitalize;
+}
+table thead a {
+  
+  color:#FFF;
+  
 }
 caption {
     padding-top: 0.75rem;
@@ -146,4 +174,29 @@ caption {
     p.card-text canvas {
         margin: auto;
     }
+    .paginationClass{
+
+}
+
+.paginationClass > li {
+    display: inline-block;
+    margin: 5px;
+    background-color: #CCC;
+    width: 30px;
+    color: black;
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 30px;
+    line-height: 30px;
+    cursor:pointer;
+  }
+  .paginationClass > li > a{
+    color:black;
+  }
+   .paginationClass .active{
+    background-color: #000;
+    width: 30px;
+    color: #FFF;
+    border: 1px solid gray;
+}
 </style>
