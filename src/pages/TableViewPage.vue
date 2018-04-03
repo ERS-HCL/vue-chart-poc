@@ -9,34 +9,18 @@
                         <pagination :current-page="pageOne.currentPage"
                         :total-pages="pageOne.totalPages"
                         :items-per-page="pageOne.itemsPerPage"
-                        @page-changed="pageOneChanged" :paginationClass="paginationClass">
+                        @page-changed="pageOneChanged" :paginationClass="paginationClass"
+                        :navigationText="{
+                          first:{text:'<<',title:'First',arialabel:'First'},
+                          last:{text:'>>',title:'Last',arialabel:'Last'},
+                          next:{text:'Next',title:'Next',arialabel:'Next',class:'btnPageNav'},
+                          previous:{text:'Previous',title:'Previous',arialabel:'Previous',class:'btnPageNav'}
+                        }">
                         </pagination>
-                        <table width="100%">
-                            <thead>
-                                <tr v-if="datacollection">
-                                    <th >
-                                      <a href="javascript:void(0);" @click="sortByKey(labels[0])">{{labels[0]}}</a>
-                                      <span class="glyphicon glyphicon-triangle-bottom"></span>
-                                      <span class="glyphicon glyphicon-triangle-top"></span>
-                                    </th>
-                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[5])">{{labels[5]}}</a></th>
-                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[7])">{{labels[7]}}</a></th>
-                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[8])">{{labels[8]}}</a></th>
-                                    <th><a href="javascript:void(0);" @click="sortByKey(labels[9])">{{labels[9]}}</a></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="d in currentPageData">
-                                    <td>{{d.name}}</td>
-                                    <td>{{d.capital}}</td>
-                                    <td>{{d.region}}</td>
-                                    <td>{{d.subregion}}</td>
-                                    <td>{{d.population}}</td>
-                                    
-                                </tr>
-                            </tbody>
-                          
-                        </table>
+                        <table-view :labels="labels" :currentPageData="currentPageData" :sortablekey="sortkey" 
+                        :className="'tableview'"
+                        :dataorder="order">
+                        </table-view>
                          
                     </div>
                 </div>
@@ -48,10 +32,11 @@
 <script>
     import populationService from '@/services/PopulationService';
     import Pagination from '@/components/Pagination.vue';
+    import TableView from '@/components/TableView.vue';
     export default {
         name: 'TableViewPage',
         components: {
-            Pagination
+            Pagination,TableView
         },
         data() {
             return {
@@ -81,9 +66,14 @@
                 self.populationService.getCountryPopulationData().then(data => {
                      console.log(data);
                       self.datacollection = data; 
-
                       if(self.datacollection && self.datacollection.length && self.datacollection.length>0) {
-                        self.labels =  Object.keys(self.datacollection[0]);
+                        //var lbl =  Object.keys(self.datacollection[0]);
+                        self.sortkey = 'name';
+                        self.labels = [{key:'name',sortable:true,display:'Country Name'},
+                        {key:'capital',sortable:true,display:'Capital'},
+                        {key:'region',sortable:true,display:'Region'},
+                        {key:'subregion',sortable:true,display:'Sub Region'},
+                        {key:'population',sortable:true,display:'Population'}];
                         self.pageOne.totalPages = parseInt(self.datacollection.length) / parseInt(self.pageOne.itemsPerPage);
                         self.currentPageData = self.paginate(self.datacollection,self.pageOne.itemsPerPage,self.pageOne.currentPage);
                       }
@@ -102,28 +92,6 @@
               page_number = page_number - 1;
               console.log("<<<>>> ",array, page_size, page_number);
               return array.slice(page_number * page_size, (page_number + 1) * page_size);
-            },
-            dynamicSort(property) {
-                var sortOrder = 1;
-                if(property[0] === "-") {
-                    sortOrder = -1;
-                    property = property.substr(1);
-                }
-                return function (a,b) {
-                    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-                    return result * sortOrder;
-                }
-            },
-            sortByKey(key) {
-              this.sortkey = key;
-              if(this.order){
-                this.order = false;
-                this.currentPageData.sort(this.dynamicSort(key));
-              } else{
-                this.order = true;
-                 this.currentPageData.sort(this.dynamicSort("-"+key));
-              }
-              
             }
         },
         mounted: function() {
@@ -135,29 +103,48 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-table td {
+.tableview{
+
+}
+.tableview td {
     border: 1px solid gray;
 }
-table th{
+.tableview  th{
     border: 1px solid #FFF;
 }
-table thead {
+.tableview  thead {
   background-color:gray;
   weight:1px;
   color:#FFF;
   text-transform: capitalize;
 }
-table thead a {
+.tableview  thead a {
   
   color:#FFF;
   
 }
-caption {
+.tableview caption {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
     color: #868e96;
     text-align: left;
      caption-side: top;
+}
+
+.tableview i {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+.tableview .up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.tableview .down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
 }
     h1,
     h2 {
@@ -188,8 +175,10 @@ caption {
 .paginationClass > li {
     display: inline-block;
     margin: 5px;
+    padding: 0 5px;
     background-color: #CCC;
-    width: 30px;
+    min-width: 30px;
+    width: auto;
     color: black;
     border: 1px solid gray;
     border-radius: 5px;
@@ -200,10 +189,15 @@ caption {
   .paginationClass > li > a{
     color:black;
   }
-   .paginationClass .active{
+  .paginationClass .active{
     background-color: #000;
     width: 30px;
     color: #FFF;
     border: 1px solid gray;
+}
+.paginationClass .btnPageNav{
+  background-color: #95c5c5;
+    width: auto;
+    color: #000;
 }
 </style>

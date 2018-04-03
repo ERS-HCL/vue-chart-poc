@@ -1,26 +1,26 @@
 <template>
 <ul :class="paginationClass">
-  <li @click.prevent="pageChanged(1)" title="Previous" aria-label="Previous">
+  <li @click.prevent="pageChanged(1)" :title="navigationText.first.title" :aria-label="navigationText.first.arialabel" :class="navigationText.first.class">
    
-      <span aria-hidden="true">&laquo;</span>
+      <span aria-hidden="true">{{navigationText.first.text}}</span>
   
   </li>
-  <li :class="preDisabled()" @click.prevent="pageChanged(currentPage-1)" title="Previous" aria-label="Previous">
+  <li v-if="navigationText && navigationText.previous" :class="preDisabled()" @click.prevent="pageChanged(currentPage-1)" :title="navigationText.previous.title" :aria-label="navigationText.previous.arialabel">
    
-      <span aria-hidden="true">&lt;</span>
+      <span aria-hidden="true">{{navigationText.previous.text}}</span>
   
   </li>
   <li v-for="n in paginationRange" :class="activePage(n)" @click.prevent="pageChanged(n)">
     <span>{{ n }}</span>
   </li>
-  <li :class="nextDisabled()" @click.prevent="pageChanged(currentPage+1)" title="Next" aria-label="Next">
+  <li v-if="navigationText && navigationText.next" :class="nextDisabled()" @click.prevent="pageChanged(currentPage+1)" :title="navigationText.next.title" :aria-label="navigationText.next.arialabel">
     
-      <span aria-hidden="true">&gt;</span>
+      <span aria-hidden="true">{{navigationText.next.text}}</span>
    
   </li>
-  <li @click.prevent="pageChanged(lastPage)" title="Next" aria-label="Next">
+  <li v-if="navigationText && navigationText.last" @click.prevent="pageChanged(lastPage)" :title="navigationText.last.title" :aria-label="navigationText.last.arialabel" :class="navigationText.last.class">
     
-      <span aria-hidden="true">&raquo;</span>
+      <span aria-hidden="true">{{navigationText.last.text}}</span>
    
   </li>
   
@@ -36,6 +36,15 @@ export default {
       type: Number,
       required: true
     },
+    navigationText:{
+      type: Object,
+      default:{
+        first:{text:'<<',title:'First',arialabel:'First',class:''},
+        last:{text:'>>',title:'Last',arialabel:'Last',class:''},
+        next:{text:'>',title:'Next',arialabel:'Next',class:''},
+        previous:{text:'<',title:'Previous',arialabel:'Previous',class:''}
+      }
+    },
     // Total page
     totalPages: Number,
     // Items per page
@@ -48,7 +57,7 @@ export default {
       default: 5,
       coerce: (val) => parseInt(val)
     },
-    paginationClass:''
+    paginationClass: String
   },
   data () {
     return {}
@@ -85,15 +94,15 @@ export default {
     },
     preDisabled (){
       if(this.currentPage <=1){
-        return 'disabled';
+        return 'disabled ' + this.navigationText.previous.class;
       }
-      return '';
+      return this.navigationText.previous.class;
     },
     nextDisabled(){
       if(this.currentPage >=this.lastPage){
-        return 'disabled';
+        return 'disabled ' + this.navigationText.next.class;
       }
-      return '';
+      return this.navigationText.next.class;
     }
   }
 }
