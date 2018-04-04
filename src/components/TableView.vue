@@ -1,58 +1,111 @@
 <template>
+<table width="100%" v-if="currentPageData">
+    <tr><td class="totalPages" :colspan="labels.length" v-if="showTotalPages && this.paginationOption.showPagination"><span class="pageHeading">Total Page(s):</span> {{pageOne.totalPages}}</td></tr>
+    <tr><td :colspan="labels.length" class="navLayout" v-if="paginationOption.showPagination && (paginationOption.position =='top' || paginationOption.position=='both')">
+        <pagination :current-page="pageOne.currentPage"
+                :total-pages="pageOne.totalPages"
+                :items-per-page="pageOne.itemsPerPage"
+                @page-changed="pageOneChanged" :paginationClass="paginationOption.paginationClass"
+                :navigationText="paginationOption.navigationText">
+    </pagination>
+    </td></tr>
+    <tr><td :colspan="labels.length">
     <table width="100%" v-if="currentPageData" :class="className">
         <thead>
             <tr v-if="labels">
-                <th v-for="l in labels">
-                    <a v-if="l.sortable" href="javascript:void(0);" @click="sortByKey(l.key)">{{l.display}} <i v-if="l.sortable && !dataorderFn && sortablekeyFn===l.key" class="up"></i><i v-if="l.sortable && dataorderFn && sortablekeyFn===l.key" class="down"></i></a>
+                <th v-for="l in labels" :class="l.headclass">
+                    <a v-if="l.sortable" href="javascript:void(0);" @click="sortByKey(l.key)">
+                        {{l.display}} 
+                        <i v-if="l.sortable && !dataorderFn && sortablekeyFn===l.key" class="up"></i>
+                        <i v-if="l.sortable && dataorderFn && sortablekeyFn===l.key" class="down"></i>
+                    </a>
                     <span v-if="!l.sortable">{{l.display}}</span>
                 </th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="d in currentPageData">
-                <td v-for="l in labels">{{d[l.key]}}</td>
-               
+                <td v-for="l in labels" :class="l.itemclass">{{d[l.key]}}</td>
             </tr>
-        </tbody>
-        
+        </tbody> 
+    </table>
+    </td>
+    </tr>
+    <tr><td :colspan="labels.length" class="navLayout" v-if="paginationOption.showPagination && (paginationOption.position=='bottom' || paginationOption.position=='both')">
+        <pagination :current-page="pageOne.currentPage"
+                :total-pages="pageOne.totalPages"
+                :items-per-page="pageOne.itemsPerPage"
+                @page-changed="pageOneChanged" :paginationClass="paginationOption.paginationClass"
+                :navigationText="paginationOption.navigationText">
+    </pagination>
+    </td></tr>
     </table>
 </template>
 <script>
+import Pagination from '@/components/Pagination.vue';
 export default {
-  name: 'TableView',
-  props: {
-    currentPageData:{
-        type:Array,
-        default:[]
+    components: {
+        Pagination
     },
-    labels:Array,
-    className: String
-  },
-  data () {
-    return { sortablekey:'',
-    dataorder:true
-    }
-  },
-  computed: {
-   sortablekeyFn:{
-       get: function(){
-           return this.sortablekey;
-       },
-       set: function(value){
-           this.sortablekey = value;
-       }
-   },
+    name: 'TableView',
+    props: {
+        datacollection:{
+            type:Array,
+            default:[]
+        },
+        labels:Array,
+        className: String,
+        showTotalPages:false,
+        paginationOption:{
+            type:[],
+            default:{position:'top',showPagination:true,itemsPerPage:10,navigationText:[],paginationClass:''}
+        }
+    },
+    data () {
+        return { 
+            sortablekey:'',
+            dataorder:true,
+            pageOne: {
+                currentPage: 1,
+                totalPages: 10,
+                itemsPerPage: 10
+            },
+            currentPageData:[]
+        }
+    },
+    computed: {
+    sortablekeyFn:{
+        get: function(){
+            return this.sortablekey;
+        },
+        set: function(value){
+            this.sortablekey = value;
+        }
+    },
     dataorderFn:{
-       get: function(){
-           return this.dataorder;
-       },
-       set: function(value){
-           this.dataorder = value;
-       }
-   }  
-  },
-  methods: {
-   dynamicSort(property) {
+        get: function(){
+            return this.dataorder;
+        },
+        set: function(value){
+            this.dataorder = value;
+        }
+    },
+    setPage(){
+        if(this.paginationOption.itemsPerPage){
+            this.pageOne.itemsPerPage = this.paginationOption.itemsPerPage;
+        }
+        this.pageOne.totalPages = parseInt(this.datacollection.length) / parseInt(this.pageOne.itemsPerPage);
+        if(this.paginationOption.showPagination){
+            this.currentPageData = this.paginate(this.datacollection,this.pageOne.itemsPerPage,this.pageOne.currentPage);
+        } else{
+            this.currentPageData = this.datacollection;
+        }
+        
+    }
+   
+    },
+    methods: {
+    dynamicSort(property) {
         var sortOrder = 1;
         if(property[0] === "-") {
             sortOrder = -1;
@@ -73,7 +126,20 @@ export default {
             this.currentPageData.sort(this.dynamicSort("-"+key));
         }
         
+    },
+    pageOneChanged (pageNum) {
+        this.pageOne.currentPage = pageNum;
+        console.log(this.pageOne.currentPage);
+        this.currentPageData = this.paginate(this.datacollection,this.pageOne.itemsPerPage,this.pageOne.currentPage)
+    },
+    paginate (array, page_size, page_number) {
+        page_number = page_number - 1;
+        console.log("<<<>>> ",array, page_size, page_number);
+        return array.slice(page_number * page_size, (page_number + 1) * page_size);
     }
-  }
+    },
+    mounted: function() {
+        this.setPage();
+    }
 }
 </script>

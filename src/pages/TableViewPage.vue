@@ -2,24 +2,17 @@
     <div class="container">
         <div class="row">
    
-            <div class="col-sm-12 col-md-12" style="float:left;" v-if="currentPageData">
+            <div class="col-sm-12 col-md-12" style="float:left;" v-if="datacollection">
                 <div class="card">
                     <div class="card-block">
                     <h3>{{title}}</h3>
-                        <pagination :current-page="pageOne.currentPage"
-                        :total-pages="pageOne.totalPages"
-                        :items-per-page="pageOne.itemsPerPage"
-                        @page-changed="pageOneChanged" :paginationClass="paginationClass"
-                        :navigationText="{
-                          first:{text:'<<',title:'First',arialabel:'First'},
-                          last:{text:'>>',title:'Last',arialabel:'Last'},
-                          next:{text:'Next',title:'Next',arialabel:'Next',class:'btnPageNav'},
-                          previous:{text:'Previous',title:'Previous',arialabel:'Previous',class:'btnPageNav'}
-                        }">
-                        </pagination>
-                        <table-view :labels="labels" :currentPageData="currentPageData" :sortablekey="sortkey" 
+                        
+                        <table-view :labels="labels" :sortablekey="sortkey" 
                         :className="'tableview'"
-                        :dataorder="order">
+                        :dataorder="order" 
+                        :paginationOption="paginationOption"
+                        :datacollection="datacollection"
+                        :showTotalPages="true">
                         </table-view>
                          
                     </div>
@@ -31,28 +24,21 @@
 
 <script>
     import populationService from '@/services/PopulationService';
-    import Pagination from '@/components/Pagination.vue';
     import TableView from '@/components/TableView.vue';
     export default {
         name: 'TableViewPage',
         components: {
-            Pagination,TableView
+            TableView
         },
         data() {
             return {
                 title: "Table View of Population",
                 datacollection: undefined,
                 labels:undefined,
-                currentPageData:[],
                 errors: undefined,
                 order: true,
-                sortkey:'',
-                paginationClass : 'paginationClass',
-                pageOne: {
-                  currentPage: 1,
-                  totalPages: 10,
-                  itemsPerPage: 10
-                }
+                sortkey:''
+               
             };
         },
         props: {
@@ -69,30 +55,28 @@
                       if(self.datacollection && self.datacollection.length && self.datacollection.length>0) {
                         //var lbl =  Object.keys(self.datacollection[0]);
                         self.sortkey = 'name';
-                        self.labels = [{key:'name',sortable:true,display:'Country Name'},
-                        {key:'capital',sortable:true,display:'Capital'},
-                        {key:'region',sortable:true,display:'Region'},
-                        {key:'subregion',sortable:true,display:'Sub Region'},
-                        {key:'population',sortable:true,display:'Population'}];
-                        self.pageOne.totalPages = parseInt(self.datacollection.length) / parseInt(self.pageOne.itemsPerPage);
-                        self.currentPageData = self.paginate(self.datacollection,self.pageOne.itemsPerPage,self.pageOne.currentPage);
+                        self.labels = [{key:'name',sortable:true,display:'Country Name',itemclass:'textleft',headclass:''},
+                        {key:'capital',sortable:true,display:'Capital',itemclass:'textleft',headclass:''},
+                        {key:'region',sortable:true,display:'Region',itemclass:'textleft',headclass:''},
+                        {key:'subregion',sortable:true,display:'Sub Region',itemclass:'textleft',headclass:''},
+                        {key:'population',sortable:true,display:'Population',itemclass:'textright',headclass:''}];
+
+                        self.navigationText = {
+                          first:{text:'<<',title:'First',arialabel:'First'},
+                          last:{text:'>>',title:'Last',arialabel:'Last'},
+                          next:{text:'Next',title:'Next',arialabel:'Next',class:'btnPageNav'},
+                          previous:{text:'Previous',title:'Previous',arialabel:'Previous',class:'btnPageNav'}
+                        };
+                        self.paginationOption = {position:'top',showPagination:true,itemsPerPage:10,navigationText:self.navigationText,paginationClass:'paginationClass'};
                       }
                       
                     },
                     function(error) {
                         self.errors = error;
-                    });
-            },
-            pageOneChanged (pageNum) {
-                this.pageOne.currentPage = pageNum;
-                console.log(this.pageOne.currentPage);
-                this.currentPageData = this.paginate(this.datacollection,this.pageOne.itemsPerPage,this.pageOne.currentPage)
-            },
-            paginate (array, page_size, page_number) {
-              page_number = page_number - 1;
-              console.log("<<<>>> ",array, page_size, page_number);
-              return array.slice(page_number * page_size, (page_number + 1) * page_size);
+                    }
+                );
             }
+           
         },
         mounted: function() {
             this.getData();
@@ -108,9 +92,11 @@
 }
 .tableview td {
     border: 1px solid gray;
+    padding:5px;
 }
 .tableview  th{
     border: 1px solid #FFF;
+    padding:5px;
 }
 .tableview  thead {
   background-color:gray;
@@ -146,6 +132,24 @@
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 }
+.textleft {
+   text-align:left
+}
+.headleft{
+    text-align:left
+}
+.textright {
+   text-align:right
+}
+.headright{
+    text-align:right
+}
+.textcenter {
+   text-align:center
+}
+.headcenter{
+    text-align:center
+}
     h1,
     h2 {
         font-weight: normal;
@@ -169,8 +173,8 @@
         margin: auto;
     }
     .paginationClass{
-
-}
+            margin: 0px;
+    }
 
 .paginationClass > li {
     display: inline-block;
@@ -185,6 +189,7 @@
     height: 30px;
     line-height: 30px;
     cursor:pointer;
+    text-align:center;
   }
   .paginationClass > li > a{
     color:black;
@@ -199,5 +204,13 @@
   background-color: #95c5c5;
     width: auto;
     color: #000;
+}
+.navLayout{
+    text-align:right;
+    padding-right:10px;
+}
+.totalPages{
+    text-align:right;
+    padding-right:15px;
 }
 </style>
