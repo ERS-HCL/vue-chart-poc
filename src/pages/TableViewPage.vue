@@ -153,11 +153,15 @@
 .tableview .up {
     transform: rotate(-135deg);
     -webkit-transform: rotate(-135deg);
+    float: right;
+    margin-top:5px;
 }
 
 .tableview .down {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
+    float: right;
+    margin-top:5px;
 }
 .tableview .rowalt0{
     background-color:#fff;

@@ -113,13 +113,8 @@ export default {
             this.currentPageData = this.paginate(this.filteredItems,this.pageOne.itemsPerPage,this.pageOne.currentPage);
         } else{
             this.currentPageData = this.filteredItems;
-        }
-        
-    },
-    column(){
-
-    }
-   
+        }  
+    }   
     },
     methods: {
     dynamicSort(property) {
