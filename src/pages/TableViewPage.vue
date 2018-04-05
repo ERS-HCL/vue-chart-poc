@@ -12,7 +12,9 @@
                         :dataorder="order" 
                         :paginationOption="paginationOption"
                         :datacollection="datacollection"
-                        :showTotalPages="true">
+                        :showTotalPages="true"
+                        :showFilter="true"
+                        :showSearch="true">
                         </table-view>
                          
                     </div>
@@ -64,8 +66,8 @@
                         self.navigationText = {
                           first:{text:'<<',title:'First',arialabel:'First'},
                           last:{text:'>>',title:'Last',arialabel:'Last'},
-                          next:{text:'Next',title:'Next',arialabel:'Next',class:'btnPageNav'},
-                          previous:{text:'Previous',title:'Previous',arialabel:'Previous',class:'btnPageNav'}
+                          next:{text:'>',title:'Next',arialabel:'Next',class:'btnPageNav'},
+                          previous:{text:'<',title:'Previous',arialabel:'Previous',class:'btnPageNav'}
                         };
                         self.paginationOption = {position:'top',showPagination:true,itemsPerPage:10,navigationText:self.navigationText,paginationClass:'paginationClass'};
                       }
@@ -87,11 +89,24 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.input{
+.control .input{
         margin: 0 5px;
+        border-radius: 5px;
+        border-color: #aaa;
+}
+.control .filter{
+    background-color: white;
+    padding: 3px;
+    border: 2px solid #aaa;
+    border-radius: 5px;
+
+}
+.control .filter option:checked, 
+.control filter option:hover{
+    background-color: #95c5c5;
 }
 .tableview{
-
+     border: 1px solid gray;
 }
 .tableview td {
     border: 1px solid gray;
@@ -100,6 +115,15 @@
 .tableview  th{
     border: 1px solid #FFF;
     padding:5px;
+}
+.tableview  th{
+    border-top: 1px solid gray;
+}
+.tableview  th:first-child{
+    border-left: 1px solid gray;
+}
+.tableview  th:last-child{
+     border-right: 1px solid gray;
 }
 .tableview  thead {
   background-color:gray;
@@ -181,16 +205,16 @@
 
 .paginationClass > li {
     display: inline-block;
-    margin: 5px;
-    padding: 0 5px;
+    margin: 2px;
+    padding: 0 3px;
     background-color: #CCC;
-    min-width: 30px;
+    min-width: 25px;
     width: auto;
     color: black;
     border: 1px solid gray;
     border-radius: 5px;
-    height: 30px;
-    line-height: 30px;
+    height: 25px;
+    line-height: 25px;
     cursor:pointer;
     text-align:center;
   }

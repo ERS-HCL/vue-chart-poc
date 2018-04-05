@@ -2,8 +2,12 @@
 <table width="100%" v-if="currentPageData">
     <tr><td class="totalPages" :colspan="labels.length" v-if="showTotalPages && this.paginationOption.showPagination">
      <p class="control is-expanded">
-        <input class="input" v-model="searchItem" v-on:keyup="searchInTheList(searchItem)" type="text" placeholder="Search Record">
-        <span class="help is-dark"><strong>{{filteredItems.length}}</strong> of {{datacollection.length}} record(s) found</span>
+        <input v-if="showSearch" class="input" v-model="searchItem" v-on:keyup="searchInTheList(searchItem)" type="text" placeholder="Search Record">
+        <select class="filter" v-model="filter" v-if="labels && showFilter" v-on:change="filterChanged(filter)">
+            <option value="" selected>All</option>
+            <option v-for = "l in labels" :value="l.key" >{{l.display}}</option>
+        </select>
+        <span v-if="showSearch || showFilter" class="help is-dark"><strong>{{filteredItems.length}}</strong> of {{datacollection.length}} record(s) found</span>
     </p>
     <span class="pageHeading">Total Page(s):</span> {{pageOne.totalPages}}</td></tr>
     <tr><td :colspan="labels.length" class="navLayout" v-if="paginationOption.showPagination && (paginationOption.position =='top' || paginationOption.position=='both')">
@@ -14,7 +18,7 @@
                 :navigationText="paginationOption.navigationText">
     </pagination>
     </td></tr>
-    <tr><td :colspan="labels.length">
+    <tr><td :colspan="labels.length" class="setPadding">
     <table width="100%" v-if="currentPageData" :class="className">
         <thead>
             <tr v-if="labels">
@@ -64,7 +68,9 @@ export default {
         paginationOption:{
             type:Object,
             default:{position:'top',showPagination:true,itemsPerPage:10,navigationText:[],paginationClass:''}
-        }
+        },
+        showFilter:true,
+        showSearch:true
     },
     data () {
         return { 
@@ -77,7 +83,8 @@ export default {
             },
             currentPageData:[],
             filteredItems: [],
-            searchItem:''
+            searchItem:'',
+            filter:''
         }
     },
     computed: {
@@ -108,6 +115,9 @@ export default {
             this.currentPageData = this.filteredItems;
         }
         
+    },
+    column(){
+
     }
    
     },
@@ -145,25 +155,34 @@ export default {
         return array.slice(page_number * page_size, (page_number + 1) * page_size);
     },
     searchInTheList: function searchInTheList(searchText, currentPage) {
-      if (!searchText) {
-        this.filteredItems = this.datacollection.filter(function (v, k) {
-          return true;
-        });
-      } else {
-        this.filteredItems = this.datacollection.filter(function (v, k) {
-            //return this.labels.some( l => 
-            //String(v[l.key]).toLowerCase().includes(searchText.toLowerCase()) 
-            //);
-          return v.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
-        });
-      }
-      this.setPage;
+        var self = this;
+        if (!searchText) {
+            this.filteredItems = this.datacollection.filter(function (v, k) {
+            return true;
+            });
+        } else {
+            this.filteredItems = this.datacollection.filter(function (v, k) {
+                if(self.filter ==''){
+                    return self.labels.some( l => 
+                        String(v[l.key]).toLowerCase().includes(searchText.toLowerCase()) 
+                    );
+                } else {
+                    return String(v[self.filter]).toLowerCase().includes(searchText.toLowerCase());
+                }
+            
+            });
+        }
+        this.setPage;
 
-      if (!currentPage) {
-        this.pageOneChanged(1);
-      } else {
-        this.pageOneChanged(currentPage);
-      }
+        if (!currentPage) {
+            this.pageOneChanged(1);
+        } else {
+            this.pageOneChanged(currentPage);
+        }
+    },
+    filterChanged (selected) {
+      this.filter = selected;
+      this.searchInTheList(this.searchItem);
     }
     },
     mounted: function() {
@@ -172,3 +191,8 @@ export default {
     }
 }
 </script>
+<style>
+    .setPadding{
+        padding: 0px 10px 10px 10px;
+    }
+</style>
