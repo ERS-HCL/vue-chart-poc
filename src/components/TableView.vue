@@ -1,6 +1,11 @@
 <template>
 <table width="100%" v-if="currentPageData">
-    <tr><td class="totalPages" :colspan="labels.length" v-if="showTotalPages && this.paginationOption.showPagination"><span class="pageHeading">Total Page(s):</span> {{pageOne.totalPages}}</td></tr>
+    <tr><td class="totalPages" :colspan="labels.length" v-if="showTotalPages && this.paginationOption.showPagination">
+     <p class="control is-expanded">
+        <input class="input" v-model="searchItem" v-on:keyup="searchInTheList(searchItem)" type="text" placeholder="Search Record">
+        <span class="help is-dark"><strong>{{filteredItems.length}}</strong> of {{datacollection.length}} record(s) found</span>
+    </p>
+    <span class="pageHeading">Total Page(s):</span> {{pageOne.totalPages}}</td></tr>
     <tr><td :colspan="labels.length" class="navLayout" v-if="paginationOption.showPagination && (paginationOption.position =='top' || paginationOption.position=='both')">
         <pagination :current-page="pageOne.currentPage"
                 :total-pages="pageOne.totalPages"
@@ -57,7 +62,7 @@ export default {
         className: String,
         showTotalPages:false,
         paginationOption:{
-            type:[],
+            type:Object,
             default:{position:'top',showPagination:true,itemsPerPage:10,navigationText:[],paginationClass:''}
         }
     },
@@ -70,7 +75,9 @@ export default {
                 totalPages: 10,
                 itemsPerPage: 10
             },
-            currentPageData:[]
+            currentPageData:[],
+            filteredItems: [],
+            searchItem:''
         }
     },
     computed: {
@@ -94,11 +101,11 @@ export default {
         if(this.paginationOption.itemsPerPage){
             this.pageOne.itemsPerPage = this.paginationOption.itemsPerPage;
         }
-        this.pageOne.totalPages = parseInt(this.datacollection.length) / parseInt(this.pageOne.itemsPerPage);
+        this.pageOne.totalPages = Math.ceil(parseInt(this.filteredItems.length) / parseInt(this.pageOne.itemsPerPage));
         if(this.paginationOption.showPagination){
-            this.currentPageData = this.paginate(this.datacollection,this.pageOne.itemsPerPage,this.pageOne.currentPage);
+            this.currentPageData = this.paginate(this.filteredItems,this.pageOne.itemsPerPage,this.pageOne.currentPage);
         } else{
-            this.currentPageData = this.datacollection;
+            this.currentPageData = this.filteredItems;
         }
         
     }
@@ -130,16 +137,38 @@ export default {
     pageOneChanged (pageNum) {
         this.pageOne.currentPage = pageNum;
         console.log(this.pageOne.currentPage);
-        this.currentPageData = this.paginate(this.datacollection,this.pageOne.itemsPerPage,this.pageOne.currentPage)
+        this.currentPageData = this.paginate(this.filteredItems,this.pageOne.itemsPerPage,this.pageOne.currentPage)
     },
     paginate (array, page_size, page_number) {
         page_number = page_number - 1;
         console.log("<<<>>> ",array, page_size, page_number);
         return array.slice(page_number * page_size, (page_number + 1) * page_size);
+    },
+    searchInTheList: function searchInTheList(searchText, currentPage) {
+      if (!searchText) {
+        this.filteredItems = this.datacollection.filter(function (v, k) {
+          return true;
+        });
+      } else {
+        this.filteredItems = this.datacollection.filter(function (v, k) {
+            //return this.labels.some( l => 
+            //String(v[l.key]).toLowerCase().includes(searchText.toLowerCase()) 
+            //);
+          return v.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+        });
+      }
+      this.setPage;
+
+      if (!currentPage) {
+        this.pageOneChanged(1);
+      } else {
+        this.pageOneChanged(currentPage);
+      }
     }
     },
     mounted: function() {
-        this.setPage();
+        this.searchInTheList('');
+       
     }
 }
 </script>

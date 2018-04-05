@@ -87,6 +87,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+.input{
+        margin: 0 5px;
+}
 .tableview{
 
 }
