@@ -33,7 +33,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="d in currentPageData">
+            <tr v-for="(d,index) in currentPageData" :class="{'rowalt0': index % 2 === 0, 'rowalt1': index % 2 !== 0 }">
                 <td v-for="l in labels" :class="l.itemclass">{{d[l.key]}}</td>
             </tr>
         </tbody> 

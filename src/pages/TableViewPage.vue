@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
    
-            <div class="col-sm-12 col-md-12" style="float:left;" v-if="datacollection">
+            <div class="col-sm-12 col-md-12" style="float:left;padding-top:10px;" v-if="datacollection">
                 <div class="card">
                     <div class="card-block">
                     <h3>{{title}}</h3>
@@ -158,6 +158,12 @@
 .tableview .down {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
+}
+.tableview .rowalt0{
+    background-color:#fff;
+}
+.tableview .rowalt1{
+    background-color:#ccc;
 }
 .textleft {
    text-align:left
