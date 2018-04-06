@@ -10,8 +10,6 @@ import BubbleChartPage from '@/pages/BubbleChartPage';
 import DoughnutChartPage from '@/pages/DoughnutChartPage';
 import ScatterChartPage from '@/pages/ScatterChartPage';
 import MixedChartPage from '@/pages/MixedChartPage';
-import TableViewPage from '@/pages/TableViewPage';
-
 
 
 Vue.use(Router);
@@ -67,11 +65,6 @@ export default new Router({
       path: '/mixedchart',
       name: 'MixedChartPage',
       component: MixedChartPage
-    },
-    {
-      path: '/tableviewlinechart',
-      name: 'TableViewPage',
-      component: TableViewPage
     }
   ]
 });

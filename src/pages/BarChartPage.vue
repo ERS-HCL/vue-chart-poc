@@ -37,11 +37,10 @@
 
 import BarChart from '@/components/BarChart';
 import chartService from '@/services/ChartService';
-import VuePagination from '@/components/Pagination.vue';
 
 export default {
   name: 'BarChartPage',
-  components: { BarChart,VuePagination },
+  components: { BarChart },
   data() {
     return {
       title: "Bar Chart",

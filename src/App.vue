@@ -11,7 +11,6 @@
           <navbar-item-dropdown label="Charts"> 
           <router-link v-for="citem of chartItems" class="dropdown-item" v-bind:to="citem.url">{{ citem.title }}</router-link>
           </navbar-item-dropdown>
-          <navbar-item htef="#" ><router-link to="/tableviewlinechart" :active="true" style="color:#FFF;">TableView</router-link></navbar-item>
           <!-- </ul> -->
           <!-- Links -->
         </navbar-nav>
